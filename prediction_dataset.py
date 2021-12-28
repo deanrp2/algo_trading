@@ -1,5 +1,5 @@
 import numpy as np
-import pandas
+import pandas as pd
 from pathlib import Path
 import utils
 import matplotlib.pyplot as plt
@@ -40,5 +40,7 @@ for c in price.columns:
     slope, intercept, r_value, p_value, std_err = sp.linregress(np.arange(training_cutoff), scaled_temp[:training_cutoff])
     rsquared.append(r_value**2)
     trend.append(slope)
-    
 
+ml_data=pd.DataFrame({"gains":gains,"tot_volume":tot_volume,"frac_change":frac_change,"rsquared":rsquared,"trend":trend})
+
+ml_data.to_csv(Path("ml_data/statistics_set.csv"))
