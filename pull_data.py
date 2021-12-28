@@ -51,8 +51,8 @@ def gsdata(s,fill=True,startdate=None,enddate=None,countbads=False):
         return returndata, getbad(filldata, rawdata)
 
 
-start= datetime.datetime(2021,12,16)
-end= datetime.datetime(2021,12,22)
+start= datetime.datetime(2021,12,13)
+end= datetime.datetime(2021,12,16)
 
 destination= Path("stock_data")
 
