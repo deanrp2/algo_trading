@@ -23,7 +23,23 @@ def read_datafiles(dates,pricepoint):
         temp_price= pick_type(temp, pricepoint)
         temp_volume= pick_volume(temp)
         
-        print (temp_volume)
+        temp_price_columns=[]
+        for c in temp_price.columns:
+            l=len(pricepoint)
+            temp_price_columns.append(c[l:]+date)
+        temp_price.columns=temp_price_columns
 
-read_datafiles(["2021-12-16","2021-12-17"],"Open")
+        temp_volume_columns=[]
+        for d in temp_volume.columns:
+            l=len("Volume")
+            temp_volume_columns.append(d[l:]+date)
+        temp_volume.columns=temp_volume_columns
+
+        concat_price.append(temp_price)
+        concat_volume.append(temp_volume)
+
+    price=pd.concat(concat_price,axis=1)
+    volume=pd.concat(concat_volume,axis=1)
+    return price,volume
+
 
