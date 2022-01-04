@@ -3,63 +3,63 @@ import pandas as pd
 from pathlib import Path
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import BayesianRidge
-from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import DotProduct, WhiteKernel
-from sklearn.svm import NuSVR
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+
+tune_knn=False
+
 
 data=pd.read_csv(Path("ml_data/statistics_set.csv"),index_col=0)
-y=data["gains"].values.reshape(-1,1)
+y=data["gains"].values
+y[y<=0]=0
+y[y>0]=1
 X=data.drop(["gains"],axis=1).values
+    
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=.4)
 
-X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=.2)
-
-scalery=preprocessing.StandardScaler().fit(y_train)
 scalerX=preprocessing.StandardScaler().fit(X_train)
-
-y_train_s=scalery.transform(y_train)
-y_test_s=scalery.transform(y_test)
 X_train_s=scalerX.transform(X_train)
 X_test_s=scalerX.transform(X_test)
 
-#Linear Model
-linear_model=LinearRegression().fit(X_train_s,y_train_s)
-linear_model_r_train=linear_model.score(X_train_s,y_train_s)
-linear_model_r_test=linear_model.score(X_test_s,y_test_s)
-print("Linear Model train",linear_model_r_train)
-print("Linear Model test",linear_model_r_test)
+#Logistic Regression (classification)
+logm=LogisticRegression().fit(X_train,y_train)
+logm_train=logm.score(X_train,y_train)
+logm_test=logm.score(X_test,y_test)
+print("Logistic Regression")
+print("Training Accuracy")
+print(logm_train)
+print("Testing Accuracy")
+print(logm_test)
 
-#Random Forest Regression
-rfr_model=RandomForestRegressor(max_depth=6).fit(X_train_s,y_train_s.ravel())
-rfr_model_r_train=rfr_model.score(X_train_s,y_train_s.ravel())
-rfr_model_r_test=rfr_model.score(X_test_s,y_test_s.ravel())
-print("Random Forest Regression train",rfr_model_r_train)
-print("Random Forest Regression test",rfr_model_r_test)
+#K nearest neighbors
+#   hyperperamater optimization
+if tune_knn==True:
+    canidate_n=list(range(131,171,2))
+    n_scores=[]
+    for n in canidate_n:
+        tempscore=[]
+        for _ in range (45):
+            X_train_temp,X_test_temp,y_train_temp,y_test_temp=train_test_split(X,y,test_size=.4)
+            tempmodel=KNeighborsClassifier(n_neighbors=n).fit(X_train_temp,y_train_temp)
+            tempscore.append(tempmodel.score(X_test_temp,y_test_temp))
+        n_scores.append(np.mean(tempscore))
+    
+    nidx_best=np.argmax(n_scores)
+    n_best=canidate_n[nidx_best]
+else:
+    n_best=147
 
-#Bayesian Ridge Regression
-bay_model=BayesianRidge().fit(X_train_s,y_train_s.ravel())
-bay_model_r_train=bay_model.score(X_train_s,y_train_s.ravel())
-bay_model_r_test=bay_model.score(X_test_s,y_test_s.ravel())
-print("Bayesian Ridge Regression train",bay_model_r_train)
-print("Bayesian Ridge Regression test",bay_model_r_test)
+#   final run        
+knnm=KNeighborsClassifier(n_neighbors=n_best).fit(X_train,y_train)
+knnm_train=knnm.score(X_train,y_train)
+knnm_test=knnm.score(X_test,y_test)
 
-#Gaussian Process Regrsssion
-#gpr_model=GaussianProcessRegressor(kernel=DotProduct() + WhiteKernel()).fit(X_train_s,y_train_s.ravel())
-#gpr_model_r_train=gpr_model.score(X_train_s,y_train_s.ravel())
-#gpr_model_r_test=gpr_model.score(X_test_s,y_test_s.ravel())
-#print("Gaussian Process Regression train",gpr_model_r_train)
-#print("Gaussian Process Regression test",gpr_model_r_test)
-
-#Support Vector Machine
-svm_model = NuSVR(C=1.0,nu=0.1).fit(X_train_s,y_train_s.ravel())
-svm_model_r_train=svm_model.score(X_train_s,y_train_s.ravel())
-svm_model_r_test=svm_model.score(X_test_s,y_test_s.ravel())
-print("Support Vector Machine train",svm_model_r_train)
-print("Support Vector Machine test",svm_model_r_test)
-
-
-
+print("K Nearest Neighbor")
+print("N")
+print(n_best)
+print("Training Accuracy")
+print(knnm_train)
+print("Testing Accuracy")
+print(knnm_test)
 
 

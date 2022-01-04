@@ -51,8 +51,8 @@ def gsdata(s,fill=True,startdate=None,enddate=None,countbads=False):
         return returndata, getbad(filldata, rawdata)
 
 
-start= datetime.datetime(2021,12,5)
-end= datetime.datetime(2021,12,13)
+start= datetime.datetime(2021,12,10)
+end= datetime.datetime(2021,12,11)
 
 destination= Path("stock_data")
 
@@ -62,7 +62,6 @@ with open(Path("tickers.txt"), "r") as ff:
 tickers =  Convert(s)
 
 for date in daterange(start, end):
-    print(date)
     if date.weekday() not in set([5,6]):
         hist,badfrac=gsdata(tickers,startdate=date,enddate=date+datetime.timedelta(days=1),countbads=True)#hist is dataframe of stock data badfrac is list of fractions of nan in each column
         goodcols=badfrac<.1

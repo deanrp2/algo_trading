@@ -5,7 +5,7 @@ import utils
 import matplotlib.pyplot as plt
 import scipy.stats as sp
 
-dates=["2021-12-06", "2021-12-07","2021-12-08","2021-12-09","2021-12-10","2021-12-13","2021-12-16","2021-12-17","2021-12-20","2021-12-21","2021-12-22"]
+dates=["2021-12-06","2021-12-07","2021-12-08","2021-12-09","2021-12-13","2021-12-16","2021-12-17","2021-12-20","2021-12-21","2021-12-22"]
 training_cutoff=150 #beginning of prediciton window
 trading_time=200 #end of prediction window, trades must be made in prediction window
 cutoff_zone=15 #buffer between buy and trading_time
@@ -27,16 +27,8 @@ frac_change=[] #price at trainging cutoff/open
 rsquared=[] #r squared from linear modle fit to traing data
 trend=[] #linear coeffecient from model fit to training data
 
-for c in price.columns:
-    print (c)
-    try:
-        price_prediction=utils.fourier_extrapolation(price[c][:training_cutoff],trading_time-training_cutoff)
-    except:
-        print(price[c].size)
-        plt.plot (price[c][:training_cutoff])
-        plt.plot (price[c],alpha=.2)
-        plt.show()
-        exit()     
+for c in  price.columns:
+    price_prediction=utils.fourier_extrapolation(price[c][:training_cutoff],trading_time-training_cutoff)     
     buy,sell=buysell_choice(price_prediction[training_cutoff:trading_time])
     if not buy is None  :
         gains.append(price[c][sell]/price[c][buy]-1)
