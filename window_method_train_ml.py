@@ -5,8 +5,10 @@ from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 tune_knn=False
+tune_dtc=True
 
 
 data=pd.read_csv(Path("ml_data/statistics_set.csv"),index_col=0)
@@ -61,5 +63,36 @@ print("Training Accuracy")
 print(knnm_train)
 print("Testing Accuracy")
 print(knnm_test)
+
+#Decision Tree Classifier
+#   hyperperamater optimization
+if tune_dtc==True:
+    canidate_depth=list(range(1, 20))
+    depth_scores=[]
+    for d in canidate_depth:
+        tempscore=[]
+        for _ in range (45):
+            X_train_temp,X_test_temp,y_train_temp,y_test_temp=train_test_split(X,y,test_size=.4)
+            tempmodel=DecisionTreeClassifier(max_depth=d).fit(X_train_temp,y_train_temp)
+            tempscore.append(tempmodel.score(X_test_temp,y_test_temp))
+        depth_scores.append(np.mean(tempscore))
+    
+    didx_best=np.argmax(depth_scores)
+    depth_best=canidate_depth[didx_best]
+else:
+    depth_best=1
+
+#   final run 
+dtcm=DecisionTreeClassifier(max_depth = depth_best).fit(X_train,y_train)
+dtcm_train=dtcm.score(X_train,y_train)
+dtcm_test=dtcm.score(X_test,y_test)
+
+print("Decision Trees")
+print("max depth")
+print(depth_best)
+print("Training Accuracy")
+print(dtcm_train)
+print("Testing Accuracy")
+print(dtcm_test)
 
 
