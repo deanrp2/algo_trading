@@ -8,7 +8,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 tune_knn=False
-tune_dtc=True
+tune_dtc=False
 
 
 data=pd.read_csv(Path("ml_data/statistics_set.csv"),index_col=0)
@@ -94,5 +94,3 @@ print("Training Accuracy")
 print(dtcm_train)
 print("Testing Accuracy")
 print(dtcm_test)
-
-
