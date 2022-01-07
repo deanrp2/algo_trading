@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn import metrics
+
 
 tune_knn=False
 tune_dtc=False
@@ -25,13 +27,13 @@ X_test_s=scalerX.transform(X_test)
 
 #Logistic Regression (classification)
 logm=LogisticRegression().fit(X_train,y_train)
-logm_train=logm.score(X_train,y_train)
-logm_test=logm.score(X_test,y_test)
+logm_train_acc=logm.score(X_train,y_train)
+logm_test_acc=logm.score(X_test,y_test)
 print("Logistic Regression")
 print("Training Accuracy")
-print(logm_train)
+print(logm_train_acc)
 print("Testing Accuracy")
-print(logm_test)
+print(logm_test_acc)
 
 #K nearest neighbors
 #   hyperperamater optimization
@@ -53,16 +55,16 @@ else:
 
 #   final run        
 knnm=KNeighborsClassifier(n_neighbors=n_best).fit(X_train,y_train)
-knnm_train=knnm.score(X_train,y_train)
-knnm_test=knnm.score(X_test,y_test)
+knnm_train_acc=knnm.score(X_train,y_train)
+knnm_test_acc=knnm.score(X_test,y_test)
 
 print("K Nearest Neighbor")
 print("N")
 print(n_best)
 print("Training Accuracy")
-print(knnm_train)
+print(knnm_train_acc)
 print("Testing Accuracy")
-print(knnm_test)
+print(knnm_test_acc)
 
 #Decision Tree Classifier
 #   hyperperamater optimization
@@ -84,13 +86,13 @@ else:
 
 #   final run 
 dtcm=DecisionTreeClassifier(max_depth = depth_best).fit(X_train,y_train)
-dtcm_train=dtcm.score(X_train,y_train)
-dtcm_test=dtcm.score(X_test,y_test)
+dtcm_train_acc=dtcm.score(X_train,y_train)
+dtcm_test_acc=dtcm.score(X_test,y_test)
 
 print("Decision Trees")
 print("max depth")
 print(depth_best)
 print("Training Accuracy")
-print(dtcm_train)
+print(dtcm_train_acc)
 print("Testing Accuracy")
-print(dtcm_test)
+print(dtcm_test_acc)
